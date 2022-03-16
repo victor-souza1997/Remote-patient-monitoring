@@ -14,18 +14,21 @@
 
 <p id="demo"></p>
 
-</body>
 
-
-</html>
 
 <script type="text/javascript">
    function myFunction()   {
 
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open("GET", "http://127.0.0.1:8080/temperature/array");
+     xmlHttp.onload = () =>{
+        console.log(xmlHttp.responseText);
+        document.getElementById("demo").innerHTML = xmlHttp.responseText;
+        
+    };
     xmlHttp.send( null) ;
-    document.getElementById("demo").innerHTML = xmlHttp.responseText;
+   
     console.log(xmlHttp.responseText);
 }
 </script>
+</body>

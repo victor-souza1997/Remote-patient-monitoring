@@ -6,10 +6,9 @@ def load_array_points():
     cnt = get_temperature_db()
     array = []
     for e in cnt:
-        print(e['sensor'])
         value = e['sensor'].values()
         array.append(float([i for i in value][0]))
-        print(array)
+    print(array)
     return array
 
 

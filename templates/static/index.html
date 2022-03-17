@@ -14,18 +14,19 @@
 <body>
     <h1>Gráfico</h1>
     <canvas id="myChart" width="50" height="50"></canvas>
-    <input id="button" type="submit" value="Test Send Data" , onclick="myFunction()" />
+    <input id="button" type="submit" value="Test Send Data" , onclick="getDataTemperature()" />
 
     <p id="demo"></p>
 
-
+    <p <span id="sensor"></span> ></p>
 
     <script>
 
         chartIt();
 
         async function chartIt() {
-            const data = await getData();
+            //const data = await getData();
+            const data = await getDataTemperature();
             const ctx = document.getElementById('myChart').getContext('2d');
             const myChart = new Chart(ctx, {
                 type: 'line',
@@ -59,15 +60,33 @@
                 const columns = row.split(',');
                 const year = columns[0];
                 const temp = columns[1];
+                //
+                //parse Float allows to sum a string to a value
                 xs.push(year);
                 ys.push(parseFloat(temp) + 14)
-                //parse Float allows to sum a string to a value
-                console.log(year, temp);
+                // console.log(year, temp);
 
             });
             return { xs, ys };
         }
+        async function getDataTemperature() {
+            const url = 'https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/temperature_analysis-gjbaa/service/get_temperature/incoming_webhook/get_temperature?db=iot&collection=readings';
+            const response = await fetch(url);
+            const data = await response.json();
+            const ys = [];
+            const xs = [];
 
+            //const obj = JSON.parse(data[0]);
+            for (i = 0; i < data.length; i++) {
+                ys.push((data[i].sensor.temperature));
+                xs.push(i);
+                console.log(((data[i].sensor.temperature)));
+            }
+            //document.getElementById("demo").innerHTML = ys;
+            return { xs, ys };
+
+        }
+        //getDataTemperature();
     </script>
     <script type="text/javascript">
 

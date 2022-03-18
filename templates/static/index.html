@@ -14,61 +14,45 @@
 <body>
     <h1>Gráfico</h1>
     <canvas id="myChart" width="50" height="50"></canvas>
-    <input id="button" type="submit" value="Test Send Data" , onclick="getDataTemperature()" />
+    <input id="button" type="submit" value="Test Send Data" , onclick="adddata()" />
 
     <p id="demo"></p>
 
     <p <span id="sensor"></span> ></p>
 
     <script>
+        const ctx = document.getElementById('myChart').getContext('2d');
 
-        chartIt();
-
-        async function chartIt() {
-            //const data = await getData();
-            const data = await getDataTemperature();
-            const ctx = document.getElementById('myChart').getContext('2d');
-            const myChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: data.xs,
-                    datasets: [{
-                        label: 'Temperature',
-                        data: data.ys,
-                        fill: false,
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
+        const myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Temperature',
+                    data: [],
+                    fill: false,
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
                     }
                 }
-            });
-        }
-        async function getData() {
-            const response = await fetch('ZonAnn.Ts+dSST.csv');
-            const data = await response.text();
-            const table = data.split('\n').slice(1);
-            const xs = []
-            const ys = []
-            table.forEach(row => {
-                const columns = row.split(',');
-                const year = columns[0];
-                const temp = columns[1];
-                //
-                //parse Float allows to sum a string to a value
-                xs.push(year);
-                ys.push(parseFloat(temp) + 14)
-                // console.log(year, temp);
+            }
+        });
 
-            });
-            return { xs, ys };
+        async function adddata() {
+            temp_data = await getDataTemperature();
+            console.log(temp_data)
+            myChart.data.datasets[0].data = temp_data.ys;
+            myChart.data.labels = temp_data.xs;
+            myChart.update();
         }
+
         async function getDataTemperature() {
             const url = 'https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/temperature_analysis-gjbaa/service/get_temperature/incoming_webhook/get_temperature?db=iot&collection=readings';
             const response = await fetch(url);
@@ -84,8 +68,8 @@
             }
             //document.getElementById("demo").innerHTML = ys;
             return { xs, ys };
-
         }
+        setInterval(adddata, 1000);
         //getDataTemperature();
     </script>
     <script type="text/javascript">
@@ -103,9 +87,6 @@
 
             console.log(xmlHttp.responseText);
         }
-
-
-
 
     </script>
 </body>

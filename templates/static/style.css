@@ -1,0 +1,16 @@
+h1 {
+    border: 2px #eee solid;
+    color: brown;
+    text-align: center;
+    padding: 10px;
+}
+
+.leftside{
+    height: 100vh;
+    width: 150%;
+}
+
+.rightside{
+    height: 100vh;
+    width: 50%;
+}

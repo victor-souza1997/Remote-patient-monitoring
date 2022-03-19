@@ -14,55 +14,32 @@
 </head>
 
 <body>
-    <h1>Gráfico</h1>
+
     <div class="row">
 
         <div class="col">
             <div class="leftside">
+                <h1>Lista de dispositivos</h1>
                 <ul id="list-section">
 
                 </ul>
-                <ul id="list-button">
+                <button id="list-button">
 
-                </ul>
+                    </ul>
             </div>
 
         </div>
 
         <div class="col">
             <div class="rightside">
+                <h2>Plot de Temperatura</h2>
                 <canvas id="myChart" width="700" height="700"></canvas>
             </div>
         </div>
     </div>
     <script>
-
-        async function printBtn1() {
-            const url = 'https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/temperature_analysis-gjbaa/service/get_devices/incoming_webhook/get_devices?db=iot&collection=readings';
-            const response = await fetch(url);
-            const data = await response.json();
-            const listBrand = ["austin", "michael", "carl"];
-
-            for (i = 0; i < data.length; i++) {
-                //listBrand.push(data[i].$numberLong);
-                //console.log(data[i].$numberLong);
-            }
-            for (var i = 0; i < listBrand.length; i++) {
-                var btn = document.createElement("button");
-                //btn.onclick = adddata();
-                var t = document.createTextNode(listBrand[i]);
-                btn.appendChild(t);
-                document.getElementById("button_list").appendChild(btn);
-                document.getElementById("button_list").addEventListener('click', function () {
-
-                    console.log(this.innerHTML);
-                });
-                // document.getElementById("demo").innerHTML = ys;
-            }
-        }
-
+        var selectedDevice = null;
         async function printBtn() {
-
             const url = 'https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/temperature_analysis-gjbaa/service/get_devices/incoming_webhook/get_devices?db=iot&collection=readings';
             const response = await fetch(url);
             const data = await response.json();
@@ -71,19 +48,28 @@
                 items.push(data[i].$numberLong);
                 //console.log(data[i].$numberLong);
             }
-            items.push(1203);
+            selectedDevice = items[0];
+            //console.log(selectedDevice)
+            items.push(1203);//only to add some more itens to the list
             for (let i = 0; i < items.length; i++) {
                 const btn = document.createElement("button");
                 btn.id = "btnItems";
                 btn.textContent = items[i];
+                btn.style.width = "200px";
+                btn.style.height = "50px";
+                btn.style.background = "gray";
+                btn.style.color = "black";
+                btn.style.display = "block";
 
                 btn.onclick = function (el) {
                     // disable your button immediately upon click
                     //el.target.disabled = true;
                     // create list element and assign value
-                    const li = document.createElement('li');
-                    li.textContent = items[i]
+                    //const li = document.createElement('li');
+                    //li.textContent = items[i]
+                    selectedDevice = items[i];
                     // append list element to your <ul> list 
+                    adddata();
                     document.getElementById('list-section').appendChild(li);
                 }
                 // append button to the DOM
@@ -91,10 +77,7 @@
                 document.getElementById("list-button").appendChild(btn)
             }
         }
-        printBtn();
 
-    </script>
-    <script>
         const ctx = document.getElementById('myChart').getContext('2d');
         const myChart = new Chart(ctx, {
             type: 'line',
@@ -128,7 +111,8 @@
         }
 
         async function getDataTemperature() {
-            const url = 'https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/temperature_analysis-gjbaa/service/get_temperature/incoming_webhook/get_temperature?db=iot&collection=readings';
+            const link = 'https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/temperature_analysis-gjbaa/service/get_temperature/incoming_webhook/get_temperature?db=iot&collection=readings';
+            const url = link + "&device=" + selectedDevice
             const response = await fetch(url);
             const data = await response.json();
             const ys = [];
@@ -143,8 +127,9 @@
             //document.getElementById("demo").innerHTML = ys;
             return { xs, ys };
         }
+        printBtn();
         adddata();
-        //setInterval(adddata, 1000);
+        setInterval(adddata, 1000);
         //getDataTemperature();
     </script>
     </script>

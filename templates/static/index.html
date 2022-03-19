@@ -19,8 +19,12 @@
 
         <div class="col">
             <div class="leftside">
-                <p>Lista de dispositivos</p>
-                <p id="button_list"></p>
+                <ul id="list-section">
+
+                </ul>
+                <ul id="list-button">
+
+                </ul>
             </div>
 
         </div>
@@ -33,23 +37,58 @@
     </div>
     <script>
 
-        async function printBtn() {
+        async function printBtn1() {
             const url = 'https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/temperature_analysis-gjbaa/service/get_devices/incoming_webhook/get_devices?db=iot&collection=readings';
             const response = await fetch(url);
             const data = await response.json();
-            const listBrand = [];
+            const listBrand = ["austin", "michael", "carl"];
 
             for (i = 0; i < data.length; i++) {
-                listBrand.push(data[i].$numberLong);
-                console.log(data[i].$numberLong);
+                //listBrand.push(data[i].$numberLong);
+                //console.log(data[i].$numberLong);
             }
             for (var i = 0; i < listBrand.length; i++) {
                 var btn = document.createElement("button");
-                btn.onclick = adddata();
+                //btn.onclick = adddata();
                 var t = document.createTextNode(listBrand[i]);
                 btn.appendChild(t);
                 document.getElementById("button_list").appendChild(btn);
+                document.getElementById("button_list").addEventListener('click', function () {
+
+                    console.log(this.innerHTML);
+                });
                 // document.getElementById("demo").innerHTML = ys;
+            }
+        }
+
+        async function printBtn() {
+
+            const url = 'https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/temperature_analysis-gjbaa/service/get_devices/incoming_webhook/get_devices?db=iot&collection=readings';
+            const response = await fetch(url);
+            const data = await response.json();
+            const items = [];
+            for (i = 0; i < data.length; i++) {
+                items.push(data[i].$numberLong);
+                //console.log(data[i].$numberLong);
+            }
+            items.push(1203);
+            for (let i = 0; i < items.length; i++) {
+                const btn = document.createElement("button");
+                btn.id = "btnItems";
+                btn.textContent = items[i];
+
+                btn.onclick = function (el) {
+                    // disable your button immediately upon click
+                    //el.target.disabled = true;
+                    // create list element and assign value
+                    const li = document.createElement('li');
+                    li.textContent = items[i]
+                    // append list element to your <ul> list 
+                    document.getElementById('list-section').appendChild(li);
+                }
+                // append button to the DOM
+                //document.body.appendChild(btn)
+                document.getElementById("list-button").appendChild(btn)
             }
         }
         printBtn();
